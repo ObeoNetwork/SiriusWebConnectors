@@ -4,8 +4,9 @@
 name: Maven Package
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -22,10 +23,9 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        # settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: github
 
     - name: Publish MySQL connector to GitHub Packages Apache Maven
-      run: mvn clean -B deploy --file org.obeonetwork.siriusweb.db.connector.mysql/pom.xml
+      run: mvn clean -B deploy --file org.obeonetwork.siriusweb.db.connector.mysql/pom.xml --settings .github/workflows/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}

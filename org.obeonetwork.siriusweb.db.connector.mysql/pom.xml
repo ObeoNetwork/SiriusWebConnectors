@@ -42,7 +42,7 @@
 
 	<distributionManagement>
 		<repository>
-			<id>obeo-network-sirius-web-connectors</id>
+			<id>github</id>
 			<name>Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/ObeoNetwork/SiriusWebConnectors</url>
 		</repository>
