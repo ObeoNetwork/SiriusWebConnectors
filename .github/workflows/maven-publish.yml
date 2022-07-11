@@ -1,7 +1,5 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
-name: Maven Package
+name: Maven Package On Tag Creation (*-mysql or *-influxdb)
 
 on:
   push:
@@ -26,6 +24,13 @@ jobs:
         server-id: github
 
     - name: Publish MySQL connector to GitHub Packages Apache Maven
+      if: endsWith(github.ref, '-mysql')
       run: mvn clean -B deploy --file org.obeonetwork.siriusweb.db.connector.mysql/pom.xml --settings .github/workflows/settings.xml
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Publish InfluxDB connector to GitHub Packages Apache Maven
+      if: endsWith(github.ref, '-influxdb')
+      run: mvn clean -B deploy --file org.obeonetwork.siriusweb.db.connector.influxdb/pom.xml --settings .github/workflows/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
