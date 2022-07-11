@@ -58,9 +58,9 @@ public class MySQLServices {
     private String onExpression;
 
     public MySQLServices() {
-        this.dbAddress = System.getProperty("db.connector.mysql.url");
-        this.dbUser = System.getProperty("db.connector.mysql.user");
-        this.dbPwd = System.getProperty("db.connector.mysql.password");
+        this.dbAddress = System.getProperty("db.connector.mysql.url"); //$NON-NLS-1$
+        this.dbUser = System.getProperty("db.connector.mysql.user"); //$NON-NLS-1$
+        this.dbPwd = System.getProperty("db.connector.mysql.password"); //$NON-NLS-1$
         this.connnection = null;
         this.selectExpression = null;
         this.fromExpression = null;
