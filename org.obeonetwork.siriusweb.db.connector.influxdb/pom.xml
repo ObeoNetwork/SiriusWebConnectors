@@ -50,10 +50,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
 		    <groupId>com.influxdb</groupId>
 		    <artifactId>influxdb-client-java</artifactId>
 		    <version>6.3.0</version>
