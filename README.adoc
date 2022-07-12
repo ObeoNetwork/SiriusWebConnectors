@@ -1,0 +1,288 @@
+= Sirius Web Connectors
+
+https://www.eclipse.org/sirius/sirius-web.html[Eclipse Sirius Web] is a framework to easily create and deploy studios to the web.
+
+This repository, `SiriusWebConnectors`, contains connectors allowing to bind `Sirius Web` to external data sources:
+
+* `org.obeonetwork.siriusweb.db.connector.mysql` contains Java services designed to be used along with https://www.eclipse.org/acceleo/documentation[AQL] inside http://docs.obeostudio.com/2022.3.0/help_center.html#_web_studio_definition[Sirius Web Studio Definition];
+* `org.obeonetwork.siriusweb.db.connector.influxdb` contains Java services designed to be used along with https://www.eclipse.org/acceleo/documentation[AQL] inside http://docs.obeostudio.com/2022.3.0/help_center.html#_web_studio_definition[Sirius Web Studio Definition].
+
+== MySQL Connector
+
+The MySQL connector for Sirius Web is compatible with https://dev.mysql.com/doc/refman/8.0/en/[MySQL 8.x].
+
+=== Start Sirius Web with the MySQL connector
+
+In the chapter below, we assume you already have followed the https://github.com/eclipse-sirius/sirius-web#quick-start[Sirius Web] page showing how to build and start a Sirius Web server, and how to generate a https://github.com/eclipse-sirius/sirius-web/blob/master/README.adoc#github-access-token[Github Access Token].
+
+If you want to add the MySQL connector to your Sirius Web application, please follow these steps:
+
+==== Modify your Sirius Web spring boot application
+
+In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/sirius-web-sample-application/pom.xml[pom.xml] file of your application, please add the SiriusWebConnectors repository and the MySQL connector dependency:
+
+[source,xml]
+----
+...
+<repositories>
+    ...
+    <repository>
+        <id>github-sirius-web-connectors</id>
+        <url>https://maven.pkg.github.com/ObeoNetwork/SiriusWebConnectors</url>
+    </repository>
+    ...
+</repositories>
+...
+<dependencies>
+    ...
+    <dependency>
+        <groupId>org.obeonetwork</groupId>
+        <artifactId>sirius-web-db-connector-mysql</artifactId>
+        <version>0.9.0</version>
+    </dependency>
+    ...
+<dependencies>
+...
+----
+
+==== Modify your Maven settings file
+
+Edit your `$HOME/.m2/settings.xml` to tell Maven to use your Github token when accessing the SiriusWebConnectors repository:
+
+[source,xml]
+----
+...
+<servers>
+    ...
+    <server>
+      <id>github-sirius-web-connectors</id>
+      <username>$GITHUB_USERNAME</username>
+      <password>$GITHUB_ACCESS_TOKEN</password>
+    </server>
+    ...
+</servers>
+...
+----
+
+==== Add the MySQL services class to your Sirius Web spring boot application
+
+Your application should already contains a https://github.com/eclipse-sirius/sirius-web/blob/master/backend/sirius-web-sample-application/src/main/java/org/eclipse/sirius/web/sample/services/EditingDomainServicesProvider.java[IJavaServicesProvider] implementation.
+
+You just have to add https://github.com/ObeoNetwork/SiriusWebConnectors/blob/main/org.obeonetwork.siriusweb.db.connector.mysql/src/main/java/org/obeonetwork/siriusweb/db/connector/mysql/MySQLServices.java[MySQLServices] as a service class of your `IJavaServiceProvider`:
+
+[source,java]
+----
+import org.eclipse.sirius.components.emf.view.IJavaServiceProvider;
+import org.eclipse.sirius.ext.emf.edit.EditingDomainServices;
+import org.obeonetwork.siriusweb.db.connector.mysql.MySQLServices;
+import org.springframework.stereotype.Service;
+...
+@Service
+public class YourServicesProvider implements IJavaServiceProvider {
+    @Override
+    public List<Class<?>> getServiceClasses(View view) {
+        return List.of(EditingDomainServices.class, MySQLServices.class);
+    }
+}
+----
+
+==== Start your Sirius Web spring boot application with MySQL connector properties
+
+When you start your Sirius Web application, add the following properties to your path:
+
+[source,sh]
+----
+    --db.connector.mysql.url=YOUR_MYSQL_DB_IP_ADDRESS
+    --db.connector.mysql.user=YOUR_MYSQL_USER_NAME
+    --db.connector.mysql.password=YOUR_MYSQL_PASSWORD
+----
+
+For example:
+
+[source,sh]
+----
+java -jar sirius-web-sample-application.jar \
+    --spring.datasource.url=jdbc:postgresql://localhost:5433/sirius-web-db \
+    --spring.datasource.username=dbuser \
+    --spring.datasource.password=dbpwd \
+    --spring.liquibase.change-log=classpath:db/changelog/sirius-web.db.changelog.xml
+    --db.connector.mysql.url=localhost
+    --db.connector.mysql.user=root
+    --db.connector.mysql.password=mySuperPassword
+----
+
+You can also add these properties to your environment variables.
+
+=== Use MySQL Java services with AQL
+
+The MySQL Java services class only supports a subset of the MySQL language. For each service it also only supports some of the options of the MySQL equivalent statement/optimization/clause. 
+
+[frame=ends]
+|===
+|AQL service |MySQL equivalent|Note
+
+|from('table_references')
+|https://dev.mysql.com/doc/refman/8.0/en/select.html[FROM] table_references
+|
+
+|fullJoin('join_clause')
+|https://dev.mysql.com/doc/refman/8.0/en/join.html[FULL JOIN] join_clause
+|
+
+|groupBy('groupBy_expression')
+|https://dev.mysql.com/doc/refman/8.0/en/group-by-optimization.html[GROUP BY] groupBy_expression
+|
+
+|innerJoin('join_clause')
+|https://dev.mysql.com/doc/refman/8.0/en/join.html[INNER JOIN] join_clause
+|
+
+|join('join_clause')
+|https://dev.mysql.com/doc/refman/8.0/en/join.html[JOIN] join_clause
+|
+
+|leftJoin('join_clause')
+|https://dev.mysql.com/doc/refman/8.0/en/order-by-optimization.html[LEFT JOIN] join_clause
+|
+
+|on('on_expression')
+|https://dev.mysql.com/doc/refman/8.0/en/join.html[ON] on_expression
+|Works only with after the call of `join`.
+
+|rightJoin('join_clause')
+|https://dev.mysql.com/doc/refman/8.0/en/order-by-optimization.html[RIGHT JOIN] join_clause
+|
+
+|sqlSelect('select_expression')
+|https://dev.mysql.com/doc/refman/8.0/en/select.html[SELECT] select_expression
+|`select` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `sqlSelect` instead
+
+|where('where_condition')
+|https://dev.mysql.com/doc/refman/8.0/en/where-optimization.html[WHERE] where_condition
+|
+
+|mySQL('dB_name')
+|N/A
+|Service used to initialize a query. Must be call on an object and with the name of the database on which the query will be executed.
+
+|fetch()
+|N/A
+|Service used to execute the query. Returns a list of `Objects`, depending on the query itself.
+|===
+
+==== Example
+
+[source,java]
+----
+aql:self.mySQL('myDB').sqlSelect('*').from('myTable').where('').fetch()
+----
+
+== InfluxDB Connector
+
+The InfluxDB connector for Sirius Web is compatible with https://docs.influxdata.com/influxdb/v2.3/[InfluxDB 2.x].
+
+=== Start Sirius Web with the InfluxDB connector
+
+In the chapter below, we assume you already have followed the https://github.com/eclipse-sirius/sirius-web#quick-start[Sirius Web] page showing how to build and start a Sirius Web server, and how to generate a https://github.com/eclipse-sirius/sirius-web/blob/master/README.adoc#github-access-token[Github Access Token].
+
+If you want to add the InfluxDB connector to your Sirius Web application, please follow these steps:
+
+==== Modify your Sirius Web spring boot application
+
+In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/sirius-web-sample-application/pom.xml[pom.xml] file of your application, please add the SiriusWebConnectors repository and the InfluxDB connector dependency:
+
+[source,xml]
+----
+...
+<repositories>
+    ...
+    <repository>
+        <id>github-sirius-web-connectors</id>
+        <url>https://maven.pkg.github.com/ObeoNetwork/SiriusWebConnectors</url>
+    </repository>
+    ...
+</repositories>
+...
+<dependencies>
+    ...
+    <dependency>
+        <groupId>org.obeonetwork</groupId>
+        <artifactId>sirius-web-db-connector-influxdb</artifactId>
+        <version>0.9.0</version>
+    </dependency>
+    ...
+<dependencies>
+...
+----
+
+==== Modify your Maven settings file
+
+Edit your `$HOME/.m2/settings.xml` to tell Maven to use your Github token when accessing the SiriusWebConnectors repository:
+
+[source,xml]
+----
+...
+<servers>
+    ...
+    <server>
+      <id>github-sirius-web-connectors</id>
+      <username>$GITHUB_USERNAME</username>
+      <password>$GITHUB_ACCESS_TOKEN</password>
+    </server>
+    ...
+</servers>
+...
+----
+
+==== Add the InfluxDB services class to your Sirius Web spring boot application
+
+Your application should already contains a https://github.com/eclipse-sirius/sirius-web/blob/master/backend/sirius-web-sample-application/src/main/java/org/eclipse/sirius/web/sample/services/EditingDomainServicesProvider.java[IJavaServicesProvider] implementation.
+
+You just have to add https://github.com/ObeoNetwork/SiriusWebConnectors/blob/main/org.obeonetwork.siriusweb.db.connector.influxdb/src/main/java/org/obeonetwork/siriusweb/db/connector/influxdb/InfluxDBServices.java[InfluxDBServices] as a service class of your `IJavaServiceProvider`:
+
+[source,java]
+----
+import org.eclipse.sirius.components.emf.view.IJavaServiceProvider;
+import org.eclipse.sirius.ext.emf.edit.EditingDomainServices;
+import org.obeonetwork.siriusweb.db.connector.influxdb.InfluxDBServices;
+import org.springframework.stereotype.Service;
+...
+@Service
+public class YourServicesProvider implements IJavaServiceProvider {
+    @Override
+    public List<Class<?>> getServiceClasses(View view) {
+        return List.of(EditingDomainServices.class, InfluxDBServices.class);
+    }
+}
+----
+
+==== Start your Sirius Web spring boot application with InfluxDB connector properties
+
+When you start your Sirius Web application, add the following properties to your path:
+
+[source,sh]
+----
+    --db.connector.influxdb.url=YOUR_INFLUX_DB_SERVER_ADDRESS
+    --db.connector.influxdb.org=YOUR_INFLUX_DB_ORGANISATION
+    --db.connector.influxdb.token=YOUR_INFLUX_DB_TOKEN
+----
+
+For example:
+
+[source,sh]
+----
+java -jar sirius-web-sample-application.jar \
+    --spring.datasource.url=jdbc:postgresql://localhost:5433/sirius-web-db \
+    --spring.datasource.username=dbuser \
+    --spring.datasource.password=dbpwd \
+    --spring.liquibase.change-log=classpath:db/changelog/sirius-web.db.changelog.xml
+    --db.connector.influxdb.url=http://localhost:8086
+    --db.connector.influxdb.org=obeo
+    --db.connector.influxdb.token=F0BQRD-McfOqWIJFqGxJ3QwEGCJpnlxwIRPlhX-c2sJQHqjOaQqgImslF1ug_nw4gDqlqBwBIVj9ZgKL28NpPc==
+----
+
+You can also add these properties to your environment variables.
+
+=== Use InfluxDB Java services with AQL
+
+TODO
