@@ -10,6 +10,7 @@ This repository, `SiriusWebConnectors`, contains connectors allowing to bind `Si
 == MySQL Connector
 
 The MySQL connector for Sirius Web is compatible with https://dev.mysql.com/doc/refman/8.0/en/[MySQL 8.x].
+It relies on the https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/module-summary.html[Java SQL standard] library.
 
 === Start Sirius Web with the MySQL connector
 
@@ -44,6 +45,7 @@ In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/si
 <dependencies>
 ...
 ----
+Please check the last version of the dependency https://github.com/orgs/ObeoNetwork/packages?repo_name=SiriusWebConnectors[here].
 
 ==== Modify your Maven settings file
 
@@ -155,7 +157,7 @@ The MySQL Java services class only supports a subset of the MySQL language. For 
 
 |sqlSelect('select_expression')
 |https://dev.mysql.com/doc/refman/8.0/en/select.html[SELECT] select_expression
-|`select` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `sqlSelect` instead
+|`select` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `sqlSelect` instead.
 
 |where('where_condition')
 |https://dev.mysql.com/doc/refman/8.0/en/where-optimization.html[WHERE] where_condition
@@ -174,12 +176,13 @@ The MySQL Java services class only supports a subset of the MySQL language. For 
 
 [source,java]
 ----
-aql:self.mySQL('myDB').sqlSelect('*').from('myTable').where('').fetch()
+aql:self.mySQL('myDB').sqlSelect('*').from('myTable').where('field > 3').fetch()
 ----
 
 == InfluxDB Connector
 
 The InfluxDB connector for Sirius Web is compatible with https://docs.influxdata.com/influxdb/v2.3/[InfluxDB 2.x].
+It relies on the https://github.com/influxdata/influxdb-client-java[influxdb-client-java] library.
 
 === Start Sirius Web with the InfluxDB connector
 
@@ -214,6 +217,7 @@ In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/si
 <dependencies>
 ...
 ----
+Please check the last version of the dependency https://github.com/orgs/ObeoNetwork/packages?repo_name=SiriusWebConnectors[here].
 
 ==== Modify your Maven settings file
 
@@ -285,4 +289,106 @@ You can also add these properties to your environment variables.
 
 === Use InfluxDB Java services with AQL
 
-TODO
+[frame=ends]
+|===
+|AQL service |InfluxDB equivalent|Note
+
+|aggregateWindow('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/#window--aggregate[aggregateWindow](parameters)
+|
+
+|cumulativeSum()
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/cumulativesum/[cumulativeSum()]
+|
+
+|derivative('parameters')
+|https://docs.influxdata.com/flux/v0.x/stdlib/universe/derivative/[derivative](parameters)
+|
+
+|keep('parameters')
+|https://docs.influxdata.com/flux/v0.x/stdlib/universe/keep/[keep](parameters)
+|
+
+|fill('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/#fill[fill](parameters)
+|
+
+|fluxFilter('parameters')
+|https://dev.mysql.com/doc/refman/8.0/en/order-by-optimization.html[filter](parameters)
+|`filter` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `fluxFilter` instead.
+
+|fluxFirst()
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/first-last/[first]()
+|`first` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `fluxFirst` instead.
+
+|fluxLast()
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/first-last/[last]()
+|`last` service already exists in https://www.eclipse.org/acceleo/documentation/[AQL] so we chose `fluxLast` instead.
+
+|group('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/group-data/[group](parameters)
+|
+
+|group()
+|https://docs.influxdata.com/flux/v0.x/stdlib/universe/group/#ungroup-data[group]()
+| Merge all tables into a single table
+
+|histogram('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/histograms/[histogram](parameters)
+|
+
+|increase()
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/increase/[increase]()
+|
+
+|limit('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/sort-limit/[limit](parameters)
+|
+
+|map('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/mathematic-operations/[map](parameters)
+|
+
+|median()
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/median/[median]()
+|
+
+|movingAverage('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/#moving-average[movingAverage](parameters)
+|
+
+|pivot('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/calculate-percentages/[pivot](parameters)
+|
+
+|quantile('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/percentile-quantile/[quantile](parameters)
+|
+
+|range('parameters')
+|https://docs.influxdata.com/flux/v0.x/stdlib/universe/range/[range](parameters)
+|
+
+|sort('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/#sort-and-limit[sort](parameters)
+|
+
+|timedMovingAverage('parameters')
+|https://docs.influxdata.com/influxdb/v2.3/query-data/flux/moving-average/[timedMovingAverage](parameters)
+|
+
+|bucket('bucket_name')
+|N/A
+|Service used to initialize a query. Must be call on an object and with the name of the bucket on which the query will be executed.
+
+|yield('field')
+|https://docs.influxdata.com/flux/v0.x/stdlib/universe/yield/[yield]
+|Service used to execute the query. Returns a list of `Objects`, depending on the query itself.
+|===
+
+==== Example
+
+[source,java]
+----
+aql:self.bucket('myBucket').range('start: 2022-07-08T07:26:06Z, stop: 2022-07-08T09:26:16Z').fluxFilter('fn: (r) => r._measurement == "airSensors"').fluxFilter('fn: (r) => r._field == "co"').median().yield('_value')
+----
