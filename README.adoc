@@ -39,7 +39,7 @@ In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/si
     <dependency>
         <groupId>org.obeonetwork</groupId>
         <artifactId>sirius-web-db-connector-mysql</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
     </dependency>
     ...
 <dependencies>
@@ -211,7 +211,7 @@ In the Maven https://github.com/eclipse-sirius/sirius-web/blob/master/backend/si
     <dependency>
         <groupId>org.obeonetwork</groupId>
         <artifactId>sirius-web-db-connector-influxdb</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
     </dependency>
     ...
 <dependencies>
