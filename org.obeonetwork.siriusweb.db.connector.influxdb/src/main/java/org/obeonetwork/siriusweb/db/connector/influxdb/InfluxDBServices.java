@@ -36,9 +36,9 @@ public class InfluxDBServices {
     private List<FluxQueryPart> queryParts;
 
     public InfluxDBServices() {
-        this.dbAddress = System.getProperty("db.connector.influxdb.url"); //$NON-NLS-1$
-        this.dbOrg = System.getProperty("db.connector.influxdb.org"); //$NON-NLS-1$
-        this.dbToken = System.getProperty("db.connector.influxdb.token"); //$NON-NLS-1$
+        this.dbAddress = System.getenv("DB_CONNECTOR_INFLUXDB_URL"); //$NON-NLS-1$
+        this.dbOrg = System.getenv("DB_CONNECTOR_INFLUXDB_ORG"); //$NON-NLS-1$
+        this.dbToken = System.getenv("DB_CONNECTOR_INFLUXDB_TOKEN"); //$NON-NLS-1$
         this.influxDBClient = null;
         this.bucketName = null;
         this.queryParts = new ArrayList<>();

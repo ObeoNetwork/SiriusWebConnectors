@@ -58,9 +58,9 @@ public class MySQLServices {
     private String onExpression;
 
     public MySQLServices() {
-        this.dbAddress = System.getProperty("db.connector.mysql.url"); //$NON-NLS-1$
-        this.dbUser = System.getProperty("db.connector.mysql.user"); //$NON-NLS-1$
-        this.dbPwd = System.getProperty("db.connector.mysql.password"); //$NON-NLS-1$
+        this.dbAddress = System.getenv("DB_CONNECTOR_MYSQL_URL"); //$NON-NLS-1$
+        this.dbUser = System.getenv("DB_CONNECTOR_MYSQL_USER"); //$NON-NLS-1$
+        this.dbPwd = System.getenv("DB_CONNECTOR_MYSQL_PASSWORD"); //$NON-NLS-1$
         this.connnection = null;
         this.selectExpression = null;
         this.fromExpression = null;
@@ -73,7 +73,7 @@ public class MySQLServices {
 
     public MySQLServices mySQL(Object object, String dbName) {
         try {
-            Class.forName("com.mysql.jdbc.Driver"); //$NON-NLS-1$
+            Class.forName("com.mysql.cj.jdbc.Driver"); //$NON-NLS-1$
             this.connnection = DriverManager.getConnection("jdbc:mysql://" + this.dbAddress + "/" + dbName, this.dbUser, this.dbPwd); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (SQLException | IllegalArgumentException | SecurityException | ClassNotFoundException e) {
             this.logger.error(e.getMessage());
