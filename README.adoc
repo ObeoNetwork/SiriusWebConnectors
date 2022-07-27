@@ -90,30 +90,23 @@ public class YourServicesProvider implements IJavaServiceProvider {
 
 ==== Start your Sirius Web spring boot application with MySQL connector properties
 
-When you start your Sirius Web application, add the following properties to your path:
+When you start your Sirius Web application, the following variables must have been added to your environment variables:
 
 [source,sh]
 ----
-    --db.connector.mysql.url=YOUR_MYSQL_DB_IP_ADDRESS
-    --db.connector.mysql.user=YOUR_MYSQL_USER_NAME
-    --db.connector.mysql.password=YOUR_MYSQL_PASSWORD
+    DB_CONNECTOR_MYSQL_URL=YOUR_MYSQL_DB_IP_ADDRESS
+    DB_CONNECTOR_MYSQL_USER=YOUR_MYSQL_USER_NAME
+    DB_CONNECTOR_MYSQL_PASSWORD=YOUR_MYSQL_PASSWORD
 ----
 
 For example:
 
 [source,sh]
 ----
-java -jar sirius-web-sample-application.jar \
-    --spring.datasource.url=jdbc:postgresql://localhost:5433/sirius-web-db \
-    --spring.datasource.username=dbuser \
-    --spring.datasource.password=dbpwd \
-    --spring.liquibase.change-log=classpath:db/changelog/sirius-web.db.changelog.xml
-    --db.connector.mysql.url=localhost
-    --db.connector.mysql.user=root
-    --db.connector.mysql.password=mySuperPassword
+    DB_CONNECTOR_MYSQL_URL=localhost
+    DB_CONNECTOR_MYSQL_USER=root
+    DB_CONNECTOR_MYSQL_PASSWORD=mySuperPassword
 ----
-
-You can also add these properties to your environment variables.
 
 === Use MySQL Java services with AQL
 
@@ -262,30 +255,23 @@ public class YourServicesProvider implements IJavaServiceProvider {
 
 ==== Start your Sirius Web spring boot application with InfluxDB connector properties
 
-When you start your Sirius Web application, add the following properties to your path:
+When you start your Sirius Web application, the following variables must have been added to your environment variables:
 
 [source,sh]
 ----
-    --db.connector.influxdb.url=YOUR_INFLUX_DB_SERVER_ADDRESS
-    --db.connector.influxdb.org=YOUR_INFLUX_DB_ORGANISATION
-    --db.connector.influxdb.token=YOUR_INFLUX_DB_TOKEN
+    DB_CONNECTOR_INFLUXDB_URL=YOUR_INFLUX_DB_SERVER_ADDRESS
+    DB_CONNECTOR_INFLUXDB_ORG=YOUR_INFLUX_DB_ORGANISATION
+    DB_CONNECTOR_INFLUXDB_TOKEN=YOUR_INFLUX_DB_TOKEN
 ----
 
 For example:
 
 [source,sh]
 ----
-java -jar sirius-web-sample-application.jar \
-    --spring.datasource.url=jdbc:postgresql://localhost:5433/sirius-web-db \
-    --spring.datasource.username=dbuser \
-    --spring.datasource.password=dbpwd \
-    --spring.liquibase.change-log=classpath:db/changelog/sirius-web.db.changelog.xml
-    --db.connector.influxdb.url=http://localhost:8086
-    --db.connector.influxdb.org=obeo
-    --db.connector.influxdb.token=F0BQRD-McfOqWIJFqGxJ3QwEGCJpnlxwIRPlhX-c2sJQHqjOaQqgImslF1ug_nw4gDqlqBwBIVj9ZgKL28NpPc==
+    DB_CONNECTOR_INFLUXDB_URL=http://localhost:8086
+    DB_CONNECTOR_INFLUXDB_ORG=obeo
+    DB_CONNECTOR_INFLUXDB_TOKEN=F0BQRD-McfOqWIJFqGxJ3QwEGCJpnlxwIRPlhX-c2sJQHqjOaQqgImslF1ug_nw4gDqlqBwBIVj9ZgKL28NpPc==
 ----
-
-You can also add these properties to your environment variables.
 
 === Use InfluxDB Java services with AQL
 
